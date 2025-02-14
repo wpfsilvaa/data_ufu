@@ -9,11 +9,11 @@ export default async function Home() {
   const editais = await getEditais();
   const getlinks = await getLinks();
   return (
-    <div className="">
+    <div className="flex flex-col justify-center align-center pt-10">
     <header>
       <NavBar />
     </header>
-  <main className="flex flex-col items-center w-full max-w-7xl p-6 dark:bg-zinc-950 rounded-lg shadow-lg ">
+  <main className="items-center  p-6 dark:bg-zinc-950 rounded-lg shadow-lg ">
     <div className="w-full flex flex-col md:flex-row md:space-x-8">
       
       {/* Editais List */}
