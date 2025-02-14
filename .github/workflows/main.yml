@@ -30,19 +30,19 @@ jobs:
 
       - name: Instalar dependências
         run: |
-          python -m venv .venv
-          . .venv/bin/activate
+          python -m venv BACKEND/.venv
+          source BACKEND/.venv/bin/activate
           python -m pip install --upgrade pip
           pip install -r BACKEND/requirements.txt
 
       - name: Criar arquivo .env
         run: |
-          echo "DB_USER=${{ secrets.DB_USER }}" >> .env
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
-          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+          echo "DB_USER=${{ secrets.DB_USER }}" >> BACKEND/.env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> BACKEND/.env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> BACKEND/.env
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> BACKEND/.env
 
       - name: Run Backend Test
         run: |
-          source /BACKEND/.venv/bin/activate
-          python -m pytest /BACKEND/case_tests.py
+          source BACKEND/.venv/bin/activate
+          python -m pytest BACKEND/case_tests.py
