@@ -44,5 +44,5 @@ jobs:
 
       - name: Run Backend Test
         run: |
-          source BACKEND/.venv/bin/activate
-          python -m pytest BACKEND/case_tests.py
+          source /BACKEND/.venv/bin/activate
+          python -m pytest /BACKEND/case_tests.py
