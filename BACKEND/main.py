@@ -7,6 +7,12 @@ from sqlalchemy.orm import Session
 from webscraping import editais_ufu,desafio
 from typing import Optional
 from sqlalchemy.exc import IntegrityError
+import schedule
+import time
+import os
+import threading
+from datetime import datetime
+import asyncio
 
 model.Base.metadata.create_all(bind=engine)
 
@@ -128,3 +134,25 @@ async def retorna_webscraping(
 @app.get("/quadrado/{num}")
 def square(num:int):
     return num ** 2
+
+async def atualiza_bd():
+    db = next(get_db())
+    print(f"Executando atualização do banco de dados em: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    await popula_banco_editais(db)
+    await desafio_pdsi2(db)
+    print("Banco de dados atualizado.")
+
+def agendamento_atualizacao_bd():
+    print("Thread Rodando")
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
+
+def executa_atualizacao():
+    asyncio.run(atualiza_bd())
+
+horario_agendado = "08:00"
+schedule.every().monday.at(horario_agendado).do(lambda: threading.Thread(target=executa_atualizacao).start())
+
+thread = threading.Thread(target=agendamento_atualizacao_bd)
+thread.start()
