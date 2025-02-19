@@ -158,6 +158,7 @@ def executa_atualizacao():
     loop.run_until_complete(atualiza_bd())
 
 def iniciar_thread_atualizacao():
+    threading.Thread(target=executa_atualizacao).start()
     horario_agendado = "05:00"
     schedule.every().monday.at(horario_agendado).do(lambda: threading.Thread(target=executa_atualizacao).start())
 
