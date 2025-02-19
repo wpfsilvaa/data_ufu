@@ -143,16 +143,17 @@ async def atualiza_bd():
     print("Banco de dados atualizado.")
 
 def agendamento_atualizacao_bd():
-    print("Thread Rodando")
-    while True:
+    while not stop_event.is_set():
         schedule.run_pending()
         time.sleep(60)
 
 def executa_atualizacao():
     asyncio.run(atualiza_bd())
 
-horario_agendado = "08:00"
-schedule.every().monday.at(horario_agendado).do(lambda: threading.Thread(target=executa_atualizacao).start())
+def iniciar_thread_atualizacao():
+    horario_agendado = "05:00"
+    schedule.every().monday.at(horario_agendado).do(lambda: threading.Thread(target=executa_atualizacao).start())
+    thread = threading.Thread(target=agendamento_atualizacao_bd, daemon=True)
+    thread.start()
 
-thread = threading.Thread(target=agendamento_atualizacao_bd)
-thread.start()
+iniciar_thread_atualizacao()

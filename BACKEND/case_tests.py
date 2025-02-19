@@ -41,6 +41,7 @@ def setup_db():
     yield
     model.Base.metadata.drop_all(bind=engine)
 
+
 def test_root():
     response = client.get("/")
     assert response.status_code == 200
@@ -86,3 +87,6 @@ def test_retorna_desafio():
     response = client.get("/desafio")
     assert response.status_code == 200
     assert isinstance(response.json(), list)
+
+def finalizar_thread():
+    parar_thread_atualizacao()
