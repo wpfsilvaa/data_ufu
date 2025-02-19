@@ -59,8 +59,14 @@ def test_criar_valores():
         "publicada": True
     }
     response = client.post("/criar", json=data)
-    assert response.status_code == 201
-    assert "Inserido na tabela" in response.json()
+    json_response = response.json()
+    assert "mensagem" in json_response
+    assert json_response["mensagem"] == "Mensagem criada com sucesso"
+
+    assert "dados" in json_response
+    assert json_response["dados"]["titulo"] == "Teste"
+    assert json_response["dados"]["conteudo"] == "Conteúdo de teste"
+    assert json_response["dados"]["publicada"] is True
 
 def test_popula_banco_editais():
     response = client.put("/webscraping")

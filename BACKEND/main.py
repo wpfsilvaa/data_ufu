@@ -1,56 +1,68 @@
-from fastapi import FastAPI, status, Depends, Response
-from fastapi.params import Body
-import classes
-import model
-from database import engine,get_db
-from sqlalchemy.orm import Session
-from webscraping import editais_ufu,desafio
-from typing import Optional
-from sqlalchemy.exc import IntegrityError
-import schedule
 import time
-import os
 import threading
 from datetime import datetime
 import asyncio
 
-model.Base.metadata.create_all(bind=engine)
+from fastapi import FastAPI, status, Depends, Response
+from fastapi.params import Body
+from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
+from contextlib import asynccontextmanager
+import schedule
 
-app = FastAPI()
+import classes
+import model
+from database import engine, get_db
+from webscraping import editais_ufu, desafio
+from typing import Optional
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("Inicializando o banco de dados...")
+    model.Base.metadata.create_all(bind=engine) 
+    yield 
+    print("Encerrando a aplicação...")
+
+app = FastAPI(lifespan=lifespan)
 
 @app.get("/")
 async def root(): 
     return {"Hello":"World!!"}
 
 @app.post("/criar", status_code=status.HTTP_201_CREATED)
-async def criar_valores(nova_mensagem: classes.Mensagem, db:Session = Depends(get_db)):
-    mensagem_criada = model.Model_Mensagem(
-        titulo=nova_mensagem.titulo, 
-        conteudo=nova_mensagem.conteudo,
-        publicada = nova_mensagem.publicada)
-    db.add(mensagem_criada)
-    db.commit()
-    db.refresh(mensagem_criada)
+async def criar_valores(nova_mensagem: classes.Mensagem, db: Session = Depends(get_db)):
+    try:
+        mensagem_criada = model.Model_Mensagem(
+            titulo=nova_mensagem.titulo,
+            conteudo=nova_mensagem.conteudo,
+            publicada=nova_mensagem.publicada
+        )
+        db.add(mensagem_criada)
+        db.commit()
+        db.refresh(mensagem_criada)
 
-    return {"Inserido na tabela": {
-        "id": mensagem_criada.id,
-        "titulo": mensagem_criada.titulo,
-        "conteudo": mensagem_criada.conteudo,
-        "publicada": mensagem_criada.publicada,
-        "created_at": mensagem_criada.created_at
-    }}
+        return {
+            "mensagem": "Mensagem criada com sucesso",
+            "dados": {
+                "titulo": mensagem_criada.titulo,
+                "conteudo": mensagem_criada.conteudo,
+                "publicada": mensagem_criada.publicada,
+            }
+        }
+    except Exception as e:
+        db.rollback()
+        return Response(content=f"Erro ao inserir: {str(e)}", status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @app.put("/desafio", status_code=status.HTTP_201_CREATED)
 async def desafio_pdsi2(db: Session = Depends(get_db)):
-    menus_salvos = []
     menus = desafio()
+    novos_menus = []
 
     for navMenu in menus:
-        navMenu_existente = db.query(model.Model_Desafio).filter(
+        if not db.query(model.Model_Desafio).filter(
             model.Model_Desafio.menuNav == navMenu["menuNav"]
-        ).first()
-        
-        if not navMenu_existente:
+        ).first():
             novo_menu = model.Model_Desafio(
                 menuNav=navMenu["menuNav"],
                 link=navMenu["link"]
@@ -59,13 +71,11 @@ async def desafio_pdsi2(db: Session = Depends(get_db)):
                 db.add(novo_menu)
                 db.commit()
                 db.refresh(novo_menu)
-                menus_salvos.append(novo_menu)
+                novos_menus.append(novo_menu)
             except IntegrityError:
                 db.rollback()
-    if not menus_salvos:
-        return Response(status_code=status.HTTP_304_NOT_MODIFIED)
-    return Response(status_code=status.HTTP_201_CREATED)
 
+    return {"mensagem": "Menus atualizados com sucesso", "dados": novos_menus} if novos_menus else Response(status_code=status.HTTP_304_NOT_MODIFIED)
 
 @app.get("/desafio")
 async def retorna_desafio(db: Session = Depends(get_db)):
@@ -142,18 +152,21 @@ async def atualiza_bd():
     await desafio_pdsi2(db)
     print("Banco de dados atualizado.")
 
-def agendamento_atualizacao_bd():
-    while not stop_event.is_set():
-        schedule.run_pending()
-        time.sleep(60)
-
 def executa_atualizacao():
-    asyncio.run(atualiza_bd())
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(atualiza_bd())
 
 def iniciar_thread_atualizacao():
     horario_agendado = "05:00"
     schedule.every().monday.at(horario_agendado).do(lambda: threading.Thread(target=executa_atualizacao).start())
-    thread = threading.Thread(target=agendamento_atualizacao_bd, daemon=True)
+
+    def rodar_agendamentos():
+        while True:
+            schedule.run_pending()
+            time.sleep(60)
+
+    thread = threading.Thread(target=rodar_agendamentos, daemon=True)
     thread.start()
 
 iniciar_thread_atualizacao()
