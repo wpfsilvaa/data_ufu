@@ -13,19 +13,19 @@ export default async function Home() {
     <header>
       <NavBar />
     </header>
-  <main className="items-center  p-6 dark:bg-zinc-950 rounded-lg shadow-lg ">
-    <div className="w-full flex flex-col md:flex-row md:space-x-8">
+  <main className="items-center p-6 rounded-lg">
+    <div className="flex flex-col md:flex-row md:space-x-8">
       
       {/* Editais List */}
       <div className="flex-1">
         <h1 className="text-xl font-semibold ">Editais Disponíveis:</h1>
-        <div className="w-full mt-2">
+        <div className="w-full mt-2 mb-3">
           <EditaisList editais={editais} />
         </div>
       </div>
 
       {/* Links Importantes List */}
-      <div className="flex-1 mt-5 md:mt-0">
+      <div className="flex-3">
         <h1 className="text-xl font-semibold ">Links Importantes:</h1>
         <div className="w-full mt-2">
           <LinksImportantsList links={getlinks} />

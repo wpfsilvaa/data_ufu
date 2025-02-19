@@ -10,12 +10,12 @@ interface Link {
   
 function LinksImportantsList({ links }: LinkListProps) {
     return (
-      <div className="mx-auto max-w-2000  max-h-80 overflow-y-auto rounded-lg  p-4 shadow-md dark:bg-stone-800">
+      <div className="mx-auto max-w-2000  max-h-80 overflow-y-auto rounded-lg  p-4 shadow-md">
         <ul className="space-y-4">
           {links.map((link) => (
-            <li key={link.id} className="border-b pb-2 last:border-none">
+            <li key={link.id} className="border-b p-2 rounded-lg hover:bg-sky-700 last:border-none">
               <a
-              className="text-xs  hover:underline dark:text-white-600 hover:text-zinc-400"
+              className="text-xs  hover:underline"
               href={link.link}
               target="_blank"
               rel="noopener noreferrer"

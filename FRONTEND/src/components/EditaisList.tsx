@@ -14,18 +14,18 @@ interface EditaisListProps {
 
 export default function EditaisList({ editais }: EditaisListProps) {
   return (
-    <div className="mx-auto max-w-2000 max-h-80 overflow-y-auto rounded-lg  p-4 shadow-md dark:bg-stone-800">
+    <div className="mx-auto max-w-2000 max-h-80 overflow-y-auto rounded-lg  p-4 shadow-md">
       <ul className="space-y-4">
         {editais.map((edital) => (
-          <li key={edital.id} className="border-b pb-2 last:border-none">
-            <strong className="block text-sm text-gray-900 dark:text-white">
+          <li key={edital.id} className="py-2 rounded pl-2 shadow-lg border-b pb-2 last:border-none hover:bg-sky-700">
+            <strong className="block text-sm">
               {edital.numero_edital} - {edital.titulo_edital}
             </strong>
-            <span className="block text-xs text-gray-600 dark:text-gray-400">
+            <span className="block text-xs">
               {edital.orgao_responsavel} • {edital.data_publicacao} • {edital.tipo}
             </span>
             <a
-              className="text-xs hover:underline  hover:text-zinc-400"
+              className="text-xs hover:underline "
               href={edital.link_edital}
               target="_blank"
               rel="noopener noreferrer"
