@@ -5,6 +5,7 @@ import asyncio
 
 from fastapi import FastAPI, status, Depends, Response
 from fastapi.params import Body
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from contextlib import asynccontextmanager
@@ -24,6 +25,21 @@ async def lifespan(app: FastAPI):
     print("Encerrando a aplicação...")
 
 app = FastAPI(lifespan=lifespan)
+
+origins = [
+    "http://localhost:3000",  # Frontend local
+    "http://127.0.0.1:3000",  # Outra possível variação local
+    "https://seusite.com"     # Caso tenha um domínio real no futuro
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Permite apenas essas origens
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite todos os métodos (GET, POST, etc.)
+    allow_headers=["*"],  # Permite todos os headers
+)
+
 
 @app.get("/")
 async def root(): 
@@ -52,6 +68,15 @@ async def criar_valores(nova_mensagem: classes.Mensagem, db: Session = Depends(g
     except Exception as e:
         db.rollback()
         return Response(content=f"Erro ao inserir: {str(e)}", status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@app.get("/criar")
+def retorna_mensagens(db: Session = Depends(get_db)):
+    query = db.query(model.Model_Mensagem)
+    mensagens = query.all()
+    if not mensagens:
+        return {"Mensagem": "Nenhuma mensagem indexada."}
+    return mensagens
+
 
 
 @app.put("/desafio", status_code=status.HTTP_201_CREATED)

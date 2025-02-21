@@ -8,7 +8,7 @@ class Model_Mensagem(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     titulo = Column(String, nullable=False)
     conteudo = Column(String, nullable=False)
-    publicada = Column(Boolean, server_default='True', nullable=False)
+    publicada = Column(Boolean, default=True, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), server_default=text('now()'), nullable=False)
 
 class Model_Editais(Base):

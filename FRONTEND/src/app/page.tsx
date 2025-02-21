@@ -2,7 +2,6 @@
 import { getEditais } from "@/lib/getEditais";
 import EditaisList from "@/components/EditaisList";
 import LinksImportantsList from "@/components/LinksImportantsList";
-import NavBar from "@/components/NavBar";
 import { getLinks } from "@/lib/getLinks";
 
 export default async function Home() {
@@ -10,9 +9,6 @@ export default async function Home() {
   const getlinks = await getLinks();
   return (
     <div className="flex basis-full flex-col justify-center align-center pt-10 ">
-    <header>
-      <NavBar />
-    </header>
   <main className="items-center p-3">
     <div className="flex flex-col md:flex-row md:space-x-8 justify-between">
       
