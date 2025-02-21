@@ -56,15 +56,11 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-800">
-      <nav className="p-4">
-        <div className="container mx-auto">
-          <a className="text-white text-lg font-semibold" href="#">
-            Mensagens APP
-          </a>
-        </div>
-      </nav>
+    <div>
       <div className="container mx-auto p-6">
+      <p className="mb-2 text-white text-lg font-semibold">
+            Mensagens APP
+          </p>
         <form onSubmit={handleFormSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="mb-4">
             <label htmlFor='titulo' className='block text-gray-700 text-sm font-bold mb-2'>
@@ -84,7 +80,7 @@ const App = () => {
               <span className='ml-2 text-gray-700'>Publicada?</span>
             </label>
           </div>
-          <button type='submit' className='bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
+          <button type='submit' className='transition delay-150 duration-300 ease-in-out   hover:scale-110 hover:shadow-lg hover:shadow-blue-500/50 hover:bg-sky-600 bg-blend-screen bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
             Submit
           </button>
         </form>
