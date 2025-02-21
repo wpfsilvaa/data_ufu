@@ -24,7 +24,6 @@ const App = () => {
       if (response.data && Array.isArray(response.data)) {
         setMensagens(response.data);
       } else {
-        console.error("Resposta inesperada da API:", response.data);
         setMensagens([]);
       }
     } catch (error) {
