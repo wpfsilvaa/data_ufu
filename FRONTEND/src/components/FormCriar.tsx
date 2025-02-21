@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import api from '@/lib/api';
 
@@ -66,13 +68,13 @@ const App = () => {
             <label htmlFor='titulo' className='block text-gray-700 text-sm font-bold mb-2'>
               Título
             </label>
-            <input type='text' className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' id='titulo' name='titulo' onChange={handleInputChange} value={formData.titulo} />
+            <input type='text' className='appearance-none border-b-4 hover:border-b-sky-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' id='titulo' name='titulo' onChange={handleInputChange} value={formData.titulo} />
           </div>
           <div className="mb-4">
             <label htmlFor='conteudo' className='block text-gray-700 text-sm font-bold mb-2'>
               Conteúdo
             </label>
-            <input type='text' className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' id='conteudo' name='conteudo' onChange={handleInputChange} value={formData.conteudo} />
+            <input type='text' className='appearance-none border-b-4 rounded hover:border-b-sky-400 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' id='conteudo' name='conteudo' onChange={handleInputChange} value={formData.conteudo} />
           </div>
           <div className="mb-4">
             <label htmlFor='publicada' className='inline-flex items-center'>
@@ -94,7 +96,7 @@ const App = () => {
           </thead>
           <tbody className='text-gray-600 text-sm font-light'>
             {Mensagens.map((Mensagem) => (
-              <tr key={Mensagem.id} className='border-b border-gray-200 hover:bg-gray-100'>
+              <tr key={Mensagem.id} className='border-gray-200 hover:bg-gray-100'>
                 <td className='py-3 px-6'>{Mensagem.titulo}</td>
                 <td className='py-3 px-6'>{Mensagem.conteudo}</td>
                 <td className='py-3 px-6'>{Mensagem.publicada ? 'sim' : 'não'}</td>

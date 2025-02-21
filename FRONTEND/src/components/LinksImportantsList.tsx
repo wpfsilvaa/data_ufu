@@ -1,3 +1,8 @@
+"use client";
+
+import api from "@/lib/api";
+import { useState, useEffect, ReactNode, Key } from "react";
+
 interface Link {
     id: number;
     menuNav:string;
@@ -5,10 +10,33 @@ interface Link {
   }
   
   interface LinkListProps {
+    id: Key | null | undefined;
+    link: string | undefined;
+    menuNav: ReactNode;
     links: Link[];
   }
   
-function LinksImportantsList({ links }: LinkListProps) {
+function LinksImportantsList() {
+  const [links, setlinks] = useState<LinkListProps[]>([]);
+  const fetchlinks = async () => {
+    try {
+      const response = await api.get('/desafio');
+      
+      if (response.data && Array.isArray(response.data)) {
+        setlinks(response.data);
+      } else {
+        setlinks([]);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar links:", error);
+      setlinks([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchlinks();
+  }, []); 
+
     return (
       <div className="overflow-x-hidden max-h-80 overflow-y-auto p-1 border-indigo-500 bg-neutral-800 rounded-lx">
         <ul className="space-y-2">
@@ -29,33 +57,6 @@ function LinksImportantsList({ links }: LinkListProps) {
     );
   }
 
-export function LinksImportantsListAlternative({links} : LinkListProps)
-{
-  return (
-    <div className="flex h-screen flex-col justify-between border-e bg-white">
-  <div className="px-4 py-6">
-    <span className="grid h-10 w-32 place-content-center rounded-lg bg-gray-100 text-xs text-gray-600">
-      Logo
-    </span>
-
-    <ul className="mt-6 space-y-1">
-    {links.map((link) => (
-            <li key={link.id} className="border-b pb-2 last:border-none">
-              <a
-              className="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700"
-              href={link.link}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {link.menuNav}
-            </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-      </div>
-  );
-}
 
 export default LinksImportantsList;
 

@@ -29,7 +29,7 @@ app = FastAPI(lifespan=lifespan)
 origins = [
     "http://localhost:3000",  # Frontend local
     "http://127.0.0.1:3000",  # Outra possível variação local
-    "https://seusite.com"     # Caso tenha um domínio real no futuro
+    "http://192.168.1.*" #Rede Local WIFI / ETHERNET
 ]
 
 app.add_middleware(
