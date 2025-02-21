@@ -1,4 +1,5 @@
-sudo systemctl start postgresql.service
+#!/bin/bash
+
 cd BACKEND
 source .venv/bin/activate
 uvicorn main:app --reload

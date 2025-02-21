@@ -4,6 +4,7 @@
 install_arch() {
     echo "Detectado Arch Linux. Instalando dependências..."
     sudo pacman -Syu --noconfirm nodejs npm
+    cd ../FRONTEND && npm install
 }
 
 # Função para instalar pacotes no Ubuntu/Debian (apt)
@@ -11,6 +12,7 @@ install_ubuntu() {
     echo "Detectado Ubuntu/Debian. Instalando dependências..."
     sudo apt update
     sudo apt install -y nodejs npm
+    cd ../FRONTEND && npm install
 }
 
 # Função para verificar a distribuição
