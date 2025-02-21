@@ -1,32 +1,58 @@
-"use client";
-import React from 'react';
+"use client"
+import React, { useState } from 'react';
 import api from '@/lib/api';
 
 const MensagensForm = () => {
+  const [formData, setFormData] = useState({
+    titulo: '',
+    conteudo: '',
+    publicada: true
+  });
+
+  const [mensagem, setMensagem] = useState<string | null>(null);
+  const [erro, setErro] = useState<string | null>(null);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+    setFormData({
+      ...formData,
+      [event.target.name]: value
+    });
+  };
+
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    
-    const formData = {
-      titulo: (document.getElementById('titulo') as HTMLInputElement).value,
-      conteudo: (document.getElementById('conteudo') as HTMLInputElement).value,
-      publicada: (document.getElementById('publicada') as HTMLInputElement).checked
-    };
   
     try {
       await api.post('/criar', formData);
-      alert('Mensagem enviada com sucesso!');
-      // Resetar os campos do formulário
-      (document.getElementById('titulo') as HTMLInputElement).value = '';
-      (document.getElementById('conteudo') as HTMLInputElement).value = '';
-      (document.getElementById('publicada') as HTMLInputElement).checked = true;
+      setMensagem('Mensagem enviada com sucesso!');
+      setErro(null);
+      setFormData({
+        titulo: '',
+        conteudo: '',
+        publicada: true
+      });
     } catch (error: any) {
       console.error('Erro completo:', error);
-      alert(error?.response?.data?.message || 'Ocorreu um erro ao enviar a mensagem. Tente novamente!');
+      setErro(error?.response?.data?.message || 'Ocorreu um erro ao enviar a mensagem. Tente novamente!');
+      setMensagem(null);
     }
   };
+  
 
   return (
     <form onSubmit={handleFormSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      {mensagem && (
+        <div className="bg-green-500 text-white p-2 rounded mb-4">
+          {mensagem}
+        </div>
+      )}
+      {erro && (
+        <div className="bg-red-500 p-2  mb-4">
+          {erro}
+        </div>
+      )}
+
       <div className="mb-4">
         <label htmlFor="titulo" className="block text-gray-700 text-sm font-bold mb-2">Título</label>
         <input
@@ -34,6 +60,8 @@ const MensagensForm = () => {
           className="appearance-none border-b-4 hover:border-b-sky-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           id="titulo"
           name="titulo"
+          onChange={handleInputChange}
+          value={formData.titulo}
         />
       </div>
       <div className="mb-4">
@@ -43,6 +71,8 @@ const MensagensForm = () => {
           className="appearance-none border-b-4 rounded hover:border-b-sky-400 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           id="conteudo"
           name="conteudo"
+          onChange={handleInputChange}
+          value={formData.conteudo}
         />
       </div>
       <div className="mb-4">
@@ -51,6 +81,8 @@ const MensagensForm = () => {
             type="checkbox"
             id="publicada"
             name="publicada"
+            onChange={handleInputChange}
+            checked={formData.publicada}
             className="form-checkbox h-5 w-5 text-blue-600"
           />
           <span className="ml-2 text-gray-700">Publicada?</span>

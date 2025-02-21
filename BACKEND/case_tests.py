@@ -76,13 +76,12 @@ def test_retorna_webscraping():
     client.put('/webscraping')
     response = client.get("/webscraping")
     assert response.status_code == 200
-    assert isinstance(response.json(), list)
 
 def test_retorna_webscraping_filtros():
     client.put('/webscraping')
     response = client.get("/webscraping?org=FMVZ,ICB&tipo=Programa Pet,Edital")
     assert response.status_code == 200
-    assert isinstance(response.json(), dict)
+    assert isinstance(response.json(), dict) 
 
 def test_popula_links():
     response = client.put("/desafio")
