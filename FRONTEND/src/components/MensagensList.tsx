@@ -1,4 +1,3 @@
-
 interface Mensagem {
     id: number;
     titulo: string;
