@@ -181,17 +181,15 @@ def executa_atualizacao():
     asyncio.set_event_loop(loop)
     loop.run_until_complete(atualiza_bd())
 
-def iniciar_thread_atualizacao():
-    threading.Thread(target=executa_atualizacao).start()
-    horario_agendado = "05:00"
-    schedule.every().monday.at(horario_agendado).do(lambda: threading.Thread(target=executa_atualizacao).start())
 
-    def rodar_agendamentos():
-        while True:
-            schedule.run_pending()
-            time.sleep(60)
+threading.Thread(target=executa_atualizacao).start()
+horario_agendado = "05:00"
+schedule.every().monday.at(horario_agendado).do(lambda: threading.Thread(target=executa_atualizacao).start())
 
-    thread = threading.Thread(target=rodar_agendamentos, daemon=True)
-    thread.start()
+def rodar_agendamentos():
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
 
-iniciar_thread_atualizacao()
+thread = threading.Thread(target=rodar_agendamentos, daemon=True)
+thread.start()
